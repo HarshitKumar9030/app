@@ -76,9 +76,11 @@ class CloudflareService {
       type: 'A',
       name: subdomain,
       content: targetIp,
-      ttl: 1, // Auto TTL
-      proxied: true // Enable Cloudflare proxy for security and performance
+      ttl: 300, // 5 minutes for faster propagation during development
+      proxied: false // Direct DNS - no Cloudflare proxy for local deployments
     };
+
+    console.log(`Creating DNS record: ${subdomain}.${baseDomain} -> ${targetIp}`);
 
     try {
       const response = await this.makeRequest<CloudflareRecord>(
@@ -94,9 +96,11 @@ class CloudflareService {
       }
 
       const fullDomain = `${subdomain}.${baseDomain}`;
+      console.log(`DNS record created successfully: ${fullDomain} -> ${targetIp}`);
+      
       return {
         subdomain,
-        url: `https://${fullDomain}`,
+        url: `http://${fullDomain}`, // Use HTTP for direct connections
         cloudflareRecordId: response.result.id,
         status: SubdomainStatus.ACTIVE
       };
@@ -294,6 +298,46 @@ class CloudflareService {
     } while (!(await this.isSubdomainAvailable(subdomain)));
 
     return subdomain;
+  }
+
+  async verifyDNSRecord(subdomain: string, expectedIP: string): Promise<{ success: boolean; currentIP?: string; error?: string }> {
+    try {
+      const baseDomain = process.env.BASE_DOMAIN || 'agfe.tech';
+      const fullDomain = `${subdomain}.${baseDomain}`;
+      
+      console.log(`Verifying DNS record: ${fullDomain} should point to ${expectedIP}`);
+      
+      // Use a public DNS resolver to check the record
+      const dnsResponse = await fetch(`https://cloudflare-dns.com/dns-query?name=${fullDomain}&type=A`, {
+        headers: {
+          'Accept': 'application/dns-json'
+        }
+      });
+      
+      if (!dnsResponse.ok) {
+        return { success: false, error: 'DNS lookup failed' };
+      }
+      
+      const dnsData = await dnsResponse.json();
+      
+      if (dnsData.Answer && dnsData.Answer.length > 0) {
+        const currentIP = dnsData.Answer[0].data;
+        const success = currentIP === expectedIP;
+        
+        console.log(`DNS verification: ${fullDomain} -> ${currentIP} (expected: ${expectedIP})`);
+        
+        return {
+          success,
+          currentIP,
+          error: success ? undefined : `IP mismatch: expected ${expectedIP}, got ${currentIP}`
+        };
+      } else {
+        return { success: false, error: 'No DNS record found' };
+      }
+    } catch (error) {
+      console.error('DNS verification error:', error);
+      return { success: false, error: error instanceof Error ? error.message : 'Unknown error' };
+    }
   }
 }
 
