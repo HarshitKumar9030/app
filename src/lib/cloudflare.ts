@@ -71,7 +71,6 @@ class CloudflareService {
     targetIp: string = '192.0.2.1' // Default placeholder IP
   ): Promise<SubdomainResponse> {
     const baseDomain = process.env.BASE_DOMAIN || 'agfe.tech';
-    const fullDomain = `${subdomain}.${baseDomain}`;
 
     const recordData: CloudflareCreateRecordRequest = {
       type: 'A',
@@ -94,6 +93,7 @@ class CloudflareService {
         throw new Error(`Failed to create DNS record: ${response.errors.map(e => e.message).join(', ')}`);
       }
 
+      const fullDomain = `${subdomain}.${baseDomain}`;
       return {
         subdomain,
         url: `https://${fullDomain}`,
@@ -104,6 +104,51 @@ class CloudflareService {
       console.error('Error creating subdomain:', error);
       throw error;
     }
+  }
+
+  async createSubdomainWithRetry(
+    preferredSubdomain?: string,
+    targetIp: string = '192.0.2.1',
+    maxRetries: number = 5
+  ): Promise<SubdomainResponse> {
+    let subdomain = preferredSubdomain;
+    let lastError: Error | null = null;
+
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        // Generate a new subdomain if not provided or if retrying
+        if (!subdomain || attempt > 0) {
+          subdomain = await this.generateUniqueSubdomain();
+        }
+
+        console.log(`Attempting to create subdomain: ${subdomain} (attempt ${attempt + 1}/${maxRetries})`);
+        
+        const result = await this.createSubdomain(subdomain, targetIp);
+        console.log(`Successfully created subdomain: ${subdomain}`);
+        return result;
+
+      } catch (error: unknown) {
+        lastError = error instanceof Error ? error : new Error(String(error));
+        
+        // Check if this is a duplicate record error
+        const errorMessage = lastError.message;
+        const isDuplicateError = errorMessage?.includes('identical record already exists') || 
+                                errorMessage?.includes('81058');
+        
+        if (isDuplicateError) {
+          console.log(`Subdomain ${subdomain} already exists, generating a new one...`);
+          subdomain = undefined; // Force generation of new subdomain on next attempt
+          continue;
+        } else {
+          // For non-duplicate errors, don't retry
+          console.error(`Non-retryable error creating subdomain: ${lastError.message}`);
+          throw lastError;
+        }
+      }
+    }
+
+    // If we've exhausted all retries
+    throw new Error(`Failed to create subdomain after ${maxRetries} attempts. Last error: ${lastError?.message}`);
   }
 
   async deleteSubdomain(recordId: string): Promise<boolean> {

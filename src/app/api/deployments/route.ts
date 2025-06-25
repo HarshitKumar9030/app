@@ -86,11 +86,11 @@ export async function POST(request: NextRequest) {
 
     // Create subdomain - use custom subdomain if provided, otherwise generate one
     const cloudflare = new CloudflareService();
-    const subdomain = customSubdomain || await cloudflare.generateUniqueSubdomain();
     
     // Create subdomain with the provided public IP or fallback to default
     const targetIP = publicIP || '192.0.2.1';
-    const subdomainResponse = await cloudflare.createSubdomain(subdomain, targetIP);
+    const subdomainResponse = await cloudflare.createSubdomainWithRetry(customSubdomain, targetIP);
+    const subdomain = subdomainResponse.subdomain;
 
     // Create deployment document
     const deploymentsCollection = await getCollection<DeploymentDocument>(Collections.DEPLOYMENTS);
