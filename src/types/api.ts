@@ -68,6 +68,9 @@ export interface CreateDeploymentRequest {
   buildCommand?: string;
   outputDirectory?: string;
   environmentVariables?: Record<string, string>;
+  publicIP?: string;
+  localIP?: string;
+  customSubdomain?: string;
 }
 
 export interface CreateDeploymentResponse {
@@ -79,6 +82,7 @@ export interface CreateDeploymentResponse {
 export interface SubdomainRequest {
   deploymentId: string;
   userId: string;
+  publicIP?: string;
 }
 
 export interface SubdomainResponse {

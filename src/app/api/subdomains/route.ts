@@ -18,7 +18,7 @@ interface SubdomainDocument extends Document {
 export async function POST(request: NextRequest) {
   try {
     const body: SubdomainRequest = await request.json();
-    const { deploymentId, userId } = body;
+    const { deploymentId, userId, publicIP } = body;
 
     if (!deploymentId || !userId) {
       return NextResponse.json<ApiResponse<null>>({
@@ -30,11 +30,24 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // Validate publicIP if provided
+    if (publicIP && !/^\d+\.\d+\.\d+\.\d+$/.test(publicIP)) {
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'INVALID_IP',
+          message: 'Invalid public IP address format'
+        }
+      }, { status: 400 });
+    }
+
     const cloudflare = new CloudflareService();
     
     const subdomain = await cloudflare.generateUniqueSubdomain();
     
-    const cloudflareResponse = await cloudflare.createSubdomain(subdomain);
+    // Create subdomain with the provided public IP or fallback to default
+    const targetIP = publicIP || '192.0.2.1';
+    const cloudflareResponse = await cloudflare.createSubdomain(subdomain, targetIP);
     
     const subdomainsCollection = await getCollection<SubdomainDocument>(Collections.SUBDOMAINS);
     

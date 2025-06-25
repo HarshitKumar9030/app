@@ -43,7 +43,18 @@ interface DeploymentDocument extends Document {
 export async function POST(request: NextRequest) {
   try {
     const body: CreateDeploymentRequest = await request.json();
-    const { projectName, gitRepository, gitBranch, framework, buildCommand, outputDirectory, environmentVariables } = body;
+    const { 
+      projectName, 
+      gitRepository, 
+      gitBranch, 
+      framework, 
+      buildCommand, 
+      outputDirectory, 
+      environmentVariables,
+      publicIP,
+      localIP,
+      customSubdomain 
+    } = body;
 
     // Validate required fields
     if (!projectName || !framework) {
@@ -56,16 +67,30 @@ export async function POST(request: NextRequest) {
       }, { status: 400 });
     }
 
+    // Validate publicIP if provided
+    if (publicIP && !/^\d+\.\d+\.\d+\.\d+$/.test(publicIP)) {
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'INVALID_IP',
+          message: 'Invalid public IP address format'
+        }
+      }, { status: 400 });
+    }
+
     // Generate unique deployment ID
     const deploymentId = crypto.randomUUID();
     
     // For now, we'll use a placeholder userId - in a real app, this would come from authentication
     const userId = 'user_' + crypto.randomUUID().split('-')[0];
 
-    // Create subdomain
+    // Create subdomain - use custom subdomain if provided, otherwise generate one
     const cloudflare = new CloudflareService();
-    const subdomain = await cloudflare.generateUniqueSubdomain();
-    const subdomainResponse = await cloudflare.createSubdomain(subdomain);
+    const subdomain = customSubdomain || await cloudflare.generateUniqueSubdomain();
+    
+    // Create subdomain with the provided public IP or fallback to default
+    const targetIP = publicIP || '192.0.2.1';
+    const subdomainResponse = await cloudflare.createSubdomain(subdomain, targetIP);
 
     // Create deployment document
     const deploymentsCollection = await getCollection<DeploymentDocument>(Collections.DEPLOYMENTS);
@@ -87,7 +112,7 @@ export async function POST(request: NextRequest) {
         id: crypto.randomUUID(),
         timestamp: new Date(),
         level: LogLevel.INFO,
-        message: 'Deployment created',
+        message: `Deployment created with subdomain ${subdomain}${publicIP ? ` pointing to ${publicIP}` : ''}`,
         source: 'system'
       }],
       createdAt: new Date(),
