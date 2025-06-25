@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
       outputDirectory, 
       environmentVariables,
       publicIP,
-      localIP,
+      // localIP,
       customSubdomain 
     } = body;
 
