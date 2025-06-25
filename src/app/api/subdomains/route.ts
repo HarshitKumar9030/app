@@ -43,7 +43,6 @@ export async function POST(request: NextRequest) {
 
     const cloudflare = new CloudflareService();
     
-    // Create subdomain with the provided public IP or fallback to default
     const targetIP = publicIP || '192.0.2.1';
     const cloudflareResponse = await cloudflare.createSubdomainWithRetry(undefined, targetIP);
     const subdomain = cloudflareResponse.subdomain;

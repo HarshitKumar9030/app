@@ -70,7 +70,7 @@ class CloudflareService {
     subdomain: string,
     targetIp: string = '192.0.2.1' // Default placeholder IP
   ): Promise<SubdomainResponse> {
-    const baseDomain = process.env.BASE_DOMAIN || 'agfe.tech';
+    const baseDomain = 'agfe.tech'; // removed BASE_DOMAIN env since I'm dumb and added it wrong url in env and am too lazy to edit it 
 
     const recordData: CloudflareCreateRecordRequest = {
       type: 'A',
