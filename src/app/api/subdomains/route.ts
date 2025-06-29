@@ -145,3 +145,107 @@ export async function GET(request: NextRequest) {
     }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  try {
+    const body = await request.json();
+    const { deploymentId, publicIP, subdomain } = body;
+
+    if (!deploymentId && !subdomain) {
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'MISSING_FIELDS',
+          message: 'Either deploymentId or subdomain is required'
+        }
+      }, { status: 400 });
+    }
+
+    if (!publicIP || !/^\d+\.\d+\.\d+\.\d+$/.test(publicIP)) {
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'INVALID_IP',
+          message: 'Valid public IP address is required'
+        }
+      }, { status: 400 });
+    }
+
+    const subdomainsCollection = await getCollection<SubdomainDocument>(Collections.SUBDOMAINS);
+    
+    // Find existing subdomain record
+    const filter: Record<string, string> = {};
+    if (deploymentId) filter.deploymentId = deploymentId;
+    if (subdomain) filter.subdomain = subdomain;
+
+    const existingRecord = await subdomainsCollection.findOne(filter);
+    
+    if (!existingRecord) {
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'SUBDOMAIN_NOT_FOUND',
+          message: 'Subdomain record not found'
+        }
+      }, { status: 404 });
+    }
+
+    // Update DNS record via Cloudflare
+    const cloudflare = new CloudflareService();
+    
+    try {
+      const updatedRecord = await cloudflare.updateSubdomain(existingRecord.cloudflareRecordId, {
+        content: publicIP
+      });
+      
+      if (!updatedRecord) {
+        throw new Error('Failed to update DNS record');
+      }
+      
+      // Update database record
+      await subdomainsCollection.updateOne(
+        { _id: existingRecord._id },
+        { 
+          $set: { 
+            updatedAt: new Date(),
+            status: 'active'
+          } 
+        }
+      );
+
+      return NextResponse.json<ApiResponse<{ message: string }>>({
+        success: true,
+        data: {
+          message: `DNS record updated for ${existingRecord.subdomain}.agfe.tech -> ${publicIP}`
+        },
+        meta: {
+          timestamp: new Date(),
+          requestId: crypto.randomUUID(),
+          version: '1.0.0'
+        }
+      });
+
+    } catch (cloudflareError) {
+      console.error('Cloudflare update error:', cloudflareError);
+      
+      return NextResponse.json<ApiResponse<null>>({
+        success: false,
+        error: {
+          code: 'DNS_UPDATE_FAILED',
+          message: `Failed to update DNS record: ${cloudflareError instanceof Error ? cloudflareError.message : 'Unknown error'}`
+        }
+      }, { status: 500 });
+    }
+
+  } catch (error) {
+    console.error('Error updating subdomain:', error);
+    
+    return NextResponse.json<ApiResponse<null>>({
+      success: false,
+      error: {
+        code: 'INTERNAL_ERROR',
+        message: error instanceof Error ? error.message : 'An unexpected error occurred'
+      }
+    }, { status: 500 });
+  }
+}
