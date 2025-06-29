@@ -319,6 +319,18 @@ export default function DocumentationPage() {
     </div>
   );
 
+  const renderCommandBlock = (command: string) => (
+    <div className="bg-gray-900/50 rounded-lg overflow-hidden border border-white/[0.08]">
+      <div className="flex items-center justify-between px-4 py-2 bg-white/[0.02] border-b border-white/[0.08]">
+        <span className="text-sm text-secondary uppercase tracking-wide">terminal</span>
+        <button className="text-secondary hover:text-foreground text-sm transition-colors">Copy</button>
+      </div>
+      <pre className="p-4 text-sm text-foreground overflow-x-auto">
+        <code>$ {command}</code>
+      </pre>
+    </div>
+  );
+
   const renderEndpoint = (endpoint: EndpointData) => (
     <motion.div
       key={endpoint.endpoint}
@@ -435,52 +447,109 @@ export default function DocumentationPage() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5 }}
             >
-              <h2 className="text-2xl font-bold text-foreground mb-6">Getting Started</h2>
+              <h2 className="text-2xl font-bold text-foreground mb-6">Getting Started with Forge CLI</h2>
               
               <div className="prose prose-lg max-w-none">
-                <div className="bg-purple-400/10 border border-purple-400/20 rounded-lg p-6 mb-8">
-                  <h3 className="text-lg font-semibold text-purple-400 mb-2">Base URL</h3>
-                  <code className="text-purple-300 bg-purple-400/20 px-3 py-1 rounded">
-                    https://api.agfe.tech
+                <div className="bg-green-400/10 border border-green-400/20 rounded-lg p-6 mb-8">
+                  <h3 className="text-lg font-semibold text-green-400 mb-2">Quick Start</h3>
+                  <p className="text-green-300 mb-3">Deploy any application in under 60 seconds:</p>
+                  <code className="text-green-300 bg-green-400/20 px-3 py-1 rounded block">
+                    npm install -g forge-deploy-cli && sudo forge infra --all && forge login && forge deploy
                   </code>
                 </div>
 
-                <h3 className="text-xl font-semibold text-foreground mb-4">Authentication</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-4">Installation</h3>
                 <p className="text-secondary mb-4">
-                  All API requests require authentication using an API key. Include your API key in the 
-                  Authorization header of every request:
+                  Install Forge CLI globally using npm:
                 </p>
                 
-                {renderCodeBlock({
-                  "Authorization": "Bearer fapi_abc123_def456..."
-                })}
+                {renderCommandBlock("npm install -g forge-deploy-cli")}
 
-                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Rate Limiting</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Infrastructure Setup</h3>
                 <p className="text-secondary mb-4">
-                  API requests are rate limited to ensure fair usage:
+                  Setup all required infrastructure components (requires sudo/admin privileges):
+                </p>
+                
+                {renderCommandBlock("sudo forge infra --all")}
+                
+                <p className="text-secondary mb-4">
+                  This command automatically installs and configures:
                 </p>
                 <ul className="list-disc list-inside text-secondary space-y-2">
-                  <li><strong className="text-foreground">Authentication endpoints:</strong> 5 requests per 15 minutes</li>
-                  <li><strong className="text-foreground">Deployment endpoints:</strong> 100 requests per hour</li>
-                  <li><strong className="text-foreground">Health checks:</strong> 60 requests per minute</li>
+                  <li><strong className="text-foreground">Nginx:</strong> Reverse proxy with automatic configuration</li>
+                  <li><strong className="text-foreground">PM2:</strong> Process manager with auto-restart</li>
+                  <li><strong className="text-foreground">SSL Certificates:</strong> Automatic Let&apos;s Encrypt/Certbot setup</li>
+                  <li><strong className="text-foreground">Python & Node.js:</strong> Runtime dependencies for various frameworks</li>
+                  <li><strong className="text-foreground">Auto-restart service:</strong> Ensures deployments survive reboots</li>
                 </ul>
 
-                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Response Format</h3>
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Authentication</h3>
                 <p className="text-secondary mb-4">
-                  All API responses follow a consistent format:
+                  Login to your Forge account to enable deployments:
                 </p>
                 
-                {renderCodeBlock({
-                  success: true,
-                  data: {
-                    "...": "Response data here"
-                  },
-                  meta: {
-                    timestamp: "2025-06-25T10:30:00.000Z",
-                    requestId: "req_abc123",
-                    version: "1.0.0"
-                  }
-                })}
+                {renderCommandBlock("forge login")}
+                
+                <p className="text-secondary mb-4">
+                  You&apos;ll be prompted to enter your email and password. The CLI will automatically store your API key.
+                </p>
+
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Deploy Your First App</h3>
+                <p className="text-secondary mb-4">
+                  Deploy any Git repository with automatic framework detection:
+                </p>
+                
+                {renderCommandBlock("forge deploy https://github.com/username/my-app.git")}
+                
+                <p className="text-secondary mb-4">
+                  Or deploy from the current directory:
+                </p>
+                
+                {renderCommandBlock("forge deploy")}
+
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Management Commands</h3>
+                <p className="text-secondary mb-4">
+                  Manage your deployments with these commands:
+                </p>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge status</code>
+                    <p className="text-gray-400 text-sm">Check all deployment status</p>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge logs [id]</code>
+                    <p className="text-gray-400 text-sm">View deployment logs</p>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge pause [id]</code>
+                    <p className="text-gray-400 text-sm">Pause a deployment</p>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge resume [id]</code>
+                    <p className="text-gray-400 text-sm">Resume a deployment</p>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge stop [id]</code>
+                    <p className="text-gray-400 text-sm">Stop a deployment</p>
+                  </div>
+                  <div className="bg-gray-800 rounded-lg p-4">
+                    <code className="text-blue-400 block mb-2">forge infra --ssl</code>
+                    <p className="text-gray-400 text-sm">Setup SSL certificates only</p>
+                  </div>
+                </div>
+
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Supported Frameworks</h3>
+                <p className="text-secondary mb-4">
+                  Forge automatically detects and deploys these frameworks:
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                  {['Next.js', 'React', 'Vue', 'Angular', 'Node.js', 'Express', 'Python/Django', 'Python/Flask', 'Python/FastAPI', 'Static Sites'].map((framework) => (
+                    <div key={framework} className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
+                      <span className="text-primary font-medium">{framework}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </motion.div>
           )}

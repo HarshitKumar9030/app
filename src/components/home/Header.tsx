@@ -6,6 +6,18 @@ import Link from "next/link";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [downloadClicked, setDownloadClicked] = useState(false);
+
+  const handleDownload = () => {
+    const installCommand = "npm install -g forge-deploy-cli";
+    navigator.clipboard.writeText(installCommand).then(() => {
+      setDownloadClicked(true);
+      setTimeout(() => setDownloadClicked(false), 2000);
+    }).catch(() => {
+      // Fallback - show the command
+      alert(`Copy this command to install Forge CLI:\n\n${installCommand}`);
+    });
+  };
 
   return (
     <motion.header 
@@ -48,12 +60,29 @@ export default function Header() {
               GitHub
             </motion.a>
             <motion.button
-              className="px-4 py-2 bg-primary hover:bg-opacity-80 text-foreground rounded-lg transition-all duration-100"
+              className="px-4 py-2 bg-primary hover:bg-opacity-80 text-foreground rounded-lg transition-all duration-100 flex items-center gap-2"
               whileTap={{ scale: 0.95 }}
-               whileHover={{ y: -2 }}
+              whileHover={{ y: -2 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              onClick={handleDownload}
             >
-              Download
+              {downloadClicked ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7,10 12,15 17,10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download
+                </>
+              )}
             </motion.button>
           </div>
           
@@ -101,11 +130,30 @@ export default function Header() {
               GitHub
             </motion.a>
             <motion.button
-              className="w-full py-2 text-center bg-primary hover:bg-opacity-80 text-foreground rounded-lg transition-colors"
-              onClick={() => setMobileMenuOpen(false)}
+              className="w-full py-2 text-center bg-primary hover:bg-opacity-80 text-foreground rounded-lg transition-colors flex items-center justify-center gap-2"
+              onClick={() => {
+                handleDownload();
+                setMobileMenuOpen(false);
+              }}
               whileTap={{ scale: 0.95 }}
             >
-              Download
+              {downloadClicked ? (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M20 6L9 17l-5-5"/>
+                  </svg>
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7,10 12,15 17,10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Download
+                </>
+              )}
             </motion.button>
           </div>
         </div>

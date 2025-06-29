@@ -8,7 +8,7 @@ export default function Hero() {
   const [textIndex, setTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
   
-  const texts = ["next.js", "flask", "node.js", "vue", "react", "django", "express"];
+  const texts = ["next.js", "react", "vue", "python", "django", "flask", "fastapi", "node.js", "express"];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,7 +22,10 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, [texts.length]);
 
-  const codeExample = `$ npm install -g forge-cli\n$ forge init my-project\n$ forge deploy`;
+  const codeExample = `$ npm install -g forge-deploy-cli
+$ sudo forge infra --all
+$ forge login
+$ forge deploy https://github.com/user/app.git`;
 
   return (
     <section className="pt-32 pb-24 relative overflow-hidden min-h-screen flex items-center">
@@ -135,9 +138,10 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6, ease: [0.16, 1, 0.3, 1] }}
         >
-          A powerful, open-source CLI tool that simplifies deployment across multiple platforms. 
-          Deploy your applications with <span className="text-primary font-semibold">zero configuration</span> and 
-          <span className="text-primary font-semibold"> maximum efficiency</span>.
+          A powerful CLI that automatically handles git cloning, dependency installation, builds, 
+          PM2 process management, nginx reverse proxy, and SSL certificates. Deploy any app with 
+          <span className="text-primary font-semibold"> zero configuration</span> and 
+          <span className="text-primary font-semibold"> automatic infrastructure</span>.
         </motion.p>
 
         <motion.div

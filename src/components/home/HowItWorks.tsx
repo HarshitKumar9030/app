@@ -6,9 +6,9 @@ export default function HowItWorks() {
   const steps = [
     {
       number: "01",
-      title: "Install & Initialize",
-      description: "Get started in seconds with our CLI tool. Smart project detection means zero configuration.",
-      code: "npm install -g forge-cli\nforge init",
+      title: "Install & Setup Infrastructure",
+      description: "Install the CLI globally and setup all required infrastructure including nginx, PM2, Python, Node.js, and SSL certificates.",
+      code: "npm install -g forge-deploy-cli\nsudo forge infra --all\n✅ Nginx, PM2, SSL certificates ready\n🚀 Infrastructure setup complete",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -17,21 +17,20 @@ export default function HowItWorks() {
     },
     {
       number: "02",
-      title: "Configure (Optional)",
-      description: "Forge automatically detects your framework. Customize deployment settings if needed.",
-      code: "forge config\n# Set environment variables\n# Configure build commands",
+      title: "Authenticate",
+      description: "Login to your Forge account to manage deployments and get automatic subdomain allocation.",
+      code: "forge login\n# Enter your email and password\n✅ Successfully authenticated\n🔑 API key configured",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-          <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" stroke="currentColor" strokeWidth="2"/>
-          <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+          <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       )
     },
     {
       number: "03",
       title: "Deploy Instantly",
-      description: "One command deploys your app to production. Get a live URL in seconds, not minutes.",
-      code: "forge deploy\n✅ Deployed to https://xxxxx.agfe.tech\n🚀 Ready in 12s",
+      description: "Deploy any Git repository with automatic framework detection, subdomain generation, and SSL certificate provisioning.",
+      code: "forge deploy https://github.com/user/app.git\n✅ Deployed to https://abc123.agfe.tech\n🔒 SSL certificate auto-configured\n🚀 Ready in 30s",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M7 16a4 4 0 0 1-.88-7.903A5 5 0 1 1 15.9 6L16 6a5 5 0 0 1 1 9.9M9 19l3 3m0 0 3-3m-3 3V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -69,13 +68,13 @@ export default function HowItWorks() {
           </motion.div>
           
           <h2 className="text-4xl md:text-5xl font-mono text-foreground mb-6 tracking-tight">
-            From code to live<br />
+            From git repo to live app<br />
             <span className="text-primary">in under 60 seconds</span>
           </h2>
           
           <p className="text-lg text-secondary max-w-2xl mx-auto leading-relaxed">
-            No complex CI/CD pipelines. No lengthy configuration files. 
-            Just simple commands that work.
+            Complete infrastructure automation. No complex CI/CD pipelines. No Docker containers. 
+            Just clone, build, and deploy with automatic SSL and subdomain management.
           </p>
         </motion.div>
 
