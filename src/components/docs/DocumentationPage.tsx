@@ -539,14 +539,23 @@ export default function DocumentationPage() {
                   </div>
                 </div>
 
+                <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Base URL</h3>
+                <p className="text-secondary mb-4">
+                  All API requests should be made to:
+                </p>
+                <div className="bg-primary/10 border border-primary/20 rounded-lg p-4 mb-6">
+                  <code className="text-primary font-mono">https://api.forgecli.tech</code>
+                </div>
+
                 <h3 className="text-xl font-semibold text-foreground mb-4 mt-8">Supported Frameworks</h3>
                 <p className="text-secondary mb-4">
                   Forge automatically detects and deploys these frameworks:
                 </p>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {['Next.js', 'React', 'Vue', 'Angular', 'Node.js', 'Express', 'Python/Django', 'Python/Flask', 'Python/FastAPI', 'Static Sites'].map((framework) => (
+                  {['Next.js', 'React', 'Vue', 'Angular', 'Vite', 'Node.js', 'Express', 'Python/Django', 'Python/Flask', 'Python/FastAPI', 'Static Sites'].map((framework) => (
                     <div key={framework} className="bg-primary/10 border border-primary/20 rounded-lg p-3 text-center">
                       <span className="text-primary font-medium">{framework}</span>
+                      {framework === 'Vite' && <span className="ml-2 text-xs bg-green-500 text-white px-2 py-1 rounded">NEW</span>}
                     </div>
                   ))}
                 </div>

@@ -46,7 +46,7 @@ export default function Header() {
           
           <div className="hidden md:flex items-center gap-4">
             <motion.a 
-              href="https://github.com/harshitkumar9030/forge" 
+              href="https://github.com/harshitkumar9030/cli" 
               target="_blank"
               rel="noopener noreferrer"
               className="px-4 py-2 text-foreground hover:text-primary transition-colors duration-300 flex items-center gap-2"
@@ -117,7 +117,7 @@ export default function Header() {
           <MobileNavLink href="/status" onClick={() => setMobileMenuOpen(false)}>Status</MobileNavLink>
           <div className="flex flex-col gap-3 mt-4 pt-4 border-t border-white/10">
             <motion.a 
-              href="https://github.com/harshitkumar9030/forge" 
+              href="https://github.com/harshitkumar9030/cli" 
               target="_blank"
               rel="noopener noreferrer"
               className="w-full py-2 text-center text-foreground hover:text-primary transition-colors flex items-center justify-center gap-2"
