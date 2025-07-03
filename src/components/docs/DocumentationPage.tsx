@@ -177,7 +177,7 @@ export default function DocumentationPage() {
             subdomain: "awesome-app-xyz123",
             projectName: "my-awesome-app",
             status: "building",
-            url: "https://awesome-app-xyz123.agfe.tech",
+            url: "https://awesome-app-xyz123.forgecli.tech",
             gitRepository: "https://github.com/username/my-app.git",
             gitBranch: "main",
             framework: "next.js",
@@ -185,7 +185,7 @@ export default function DocumentationPage() {
             healthStatus: "unknown"
           },
           subdomain: "awesome-app-xyz123",
-          url: "https://awesome-app-xyz123.agfe.tech"
+          url: "https://awesome-app-xyz123.forgecli.tech"
         },
         meta: {
           timestamp: "2025-06-25T10:30:00.000Z",
@@ -215,7 +215,7 @@ export default function DocumentationPage() {
             subdomain: "awesome-app-xyz123",
             projectName: "my-awesome-app",
             status: "deployed",
-            url: "https://awesome-app-xyz123.agfe.tech",
+            url: "https://awesome-app-xyz123.forgecli.tech",
             framework: "next.js",
             createdAt: "2025-06-25T10:30:00.000Z",
             deployedAt: "2025-06-25T10:32:15.000Z",
@@ -250,7 +250,7 @@ export default function DocumentationPage() {
         success: true,
         data: {
           subdomain: "awesome-app-xyz123",
-          url: "https://awesome-app-xyz123.agfe.tech",
+          url: "https://awesome-app-xyz123.forgecli.tech",
           cloudflareRecordId: "cf_record_abc123",
           status: "active"
         },

@@ -70,7 +70,7 @@ class CloudflareService {
     subdomain: string,
     targetIp: string = '192.0.2.1' // Default placeholder IP
   ): Promise<SubdomainResponse> {
-    const baseDomain = 'agfe.tech'; // removed BASE_DOMAIN env since I'm dumb and added it wrong url in env and am too lazy to edit it 
+    const baseDomain = 'forgecli.tech'; // removed BASE_DOMAIN env since I'm dumb and added it wrong url in env and am too lazy to edit it 
 
     const recordData: CloudflareCreateRecordRequest = {
       type: 'A',
@@ -302,7 +302,7 @@ class CloudflareService {
 
   async verifyDNSRecord(subdomain: string, expectedIP: string): Promise<{ success: boolean; currentIP?: string; error?: string }> {
     try {
-      const baseDomain = process.env.BASE_DOMAIN || 'agfe.tech';
+      const baseDomain = process.env.BASE_DOMAIN || 'forgecli.tech';
       const fullDomain = `${subdomain}.${baseDomain}`;
       
       console.log(`Verifying DNS record: ${fullDomain} should point to ${expectedIP}`);

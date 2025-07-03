@@ -30,7 +30,7 @@ export default function HowItWorks() {
       number: "03",
       title: "Deploy Instantly",
       description: "Deploy any Git repository with automatic framework detection, subdomain generation, and SSL certificate provisioning.",
-      code: "forge deploy https://github.com/user/app.git\n✅ Deployed to https://abc123.agfe.tech\n🔒 SSL certificate auto-configured\n🚀 Ready in 30s",
+      code: "forge deploy https://github.com/user/app.git\n✅ Deployed to https://abc123.forgecli.tech\n🔒 SSL certificate auto-configured\n🚀 Ready in 30s",
       icon: (
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M7 16a4 4 0 0 1-.88-7.903A5 5 0 1 1 15.9 6L16 6a5 5 0 0 1 1 9.9M9 19l3 3m0 0 3-3m-3 3V10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

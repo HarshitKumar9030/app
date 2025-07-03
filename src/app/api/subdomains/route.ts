@@ -216,7 +216,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json<ApiResponse<{ message: string }>>({
         success: true,
         data: {
-          message: `DNS record updated for ${existingRecord.subdomain}.agfe.tech -> ${publicIP}`
+          message: `DNS record updated for ${existingRecord.subdomain}.forgecli.tech -> ${publicIP}`
         },
         meta: {
           timestamp: new Date(),
