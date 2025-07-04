@@ -120,10 +120,10 @@ async function getDeploymentStats(serverIP: string, deploymentId: string, port: 
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const deploymentId = params.id;
+    const { id: deploymentId } = await params;
 
     if (!deploymentId) {
       return NextResponse.json(
