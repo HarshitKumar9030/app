@@ -14,6 +14,8 @@ export interface Deployment {
   buildCommand?: string;
   outputDirectory?: string;
   environmentVariables?: Record<string, string>;
+  serverIP?: string; // IP address of the server where deployment is running
+  port?: number; // Port where the CLI API server is running (default: 8080)
   deploymentLogs: DeploymentLog[];
   createdAt: Date;
   updatedAt: Date;

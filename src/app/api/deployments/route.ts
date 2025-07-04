@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
     // Create deployment document
     const deploymentsCollection = await getCollection<DeploymentDocument>(Collections.DEPLOYMENTS);
     
-    const deploymentDoc: Omit<Deployment, '_id'> = {
+    const deploymentDoc: Omit<Deployment, '_id'> & { serverIP: string; port?: number } = {
       id: deploymentId,
       userId,
       subdomain,
@@ -108,6 +108,8 @@ export async function POST(request: NextRequest) {
       buildCommand,
       outputDirectory,
       environmentVariables,
+      serverIP: targetIP, // Store the server IP for later CLI communication
+      port: 8080, // Default CLI API server port
       deploymentLogs: [{
         id: crypto.randomUUID(),
         timestamp: new Date(),
