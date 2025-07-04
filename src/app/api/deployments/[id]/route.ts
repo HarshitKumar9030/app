@@ -26,6 +26,13 @@ interface LiveStats {
     responseTime: number;
     lastCheck: string;
   };
+  ssl?: {
+    enabled: boolean;
+    expiresAt?: string;
+    issuer?: string;
+    daysUntilExpiry?: number;
+    certificate?: string;
+  };
   uptime?: string;
   logs?: string[];
 }
@@ -56,7 +63,10 @@ interface DeploymentData {
   };
   ssl: {
     enabled: boolean;
-    expiresAt: string;
+    expiresAt?: string;
+    issuer?: string;
+    daysUntilExpiry?: number;
+    certificate?: string;
   };
   logs: string[];
 }
@@ -92,6 +102,7 @@ async function getDeploymentStats(serverIP: string, deploymentId: string, port: 
             diskUsagePercent: deployment.resources?.disk || 0
           },
           health: deployment.health || { status: 'unknown', responseTime: 0, lastCheck: new Date().toISOString() },
+          ssl: deployment.ssl || { enabled: false },
           uptime: deployment.uptime,
           logs: deployment.logs || []
         };
@@ -191,7 +202,7 @@ export async function GET(
         diskUsed: liveStats.resources?.diskUsed ? (liveStats.resources.diskUsed / (1024 * 1024 * 1024)) : 0, // Convert bytes to GB
         diskLimit: 15 // 15GB limit
       },
-      ssl: {
+      ssl: liveStats.ssl || {
         enabled: deployment.url?.startsWith('https://') || false,
         expiresAt: deployment.sslExpiresAt || new Date(Date.now() + 90 * 24 * 60 * 60 * 1000).toISOString()
       },
