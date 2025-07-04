@@ -224,9 +224,9 @@ $ forge deploy https://github.com/user/app.git`;
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1.4, ease: [0.16, 1, 0.3, 1] }}
         >
-          <StatItem number="10K+" label="Deployments" />
-          <StatItem number="500+" label="Contributors" />
-          <StatItem number="15+" label="Frameworks" />
+          <StatItem number="1K+" label="Deployments" />
+          <StatItem number="1+" label="Contributors" />
+          <StatItem number="10+" label="Frameworks" />
         </motion.div>
       </div>
     </section>
